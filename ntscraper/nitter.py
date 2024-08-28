@@ -250,7 +250,7 @@ class Nitter:
         if self.proxies:
             random.shuffle(self.proxies)
 
-        while keep_trying and (self.retry_count < max_retries) and self.proxies:
+        while keep_trying and (self.retry_count < max_retries):
             try:
                 proxy_ip = self.retry_count % len(self.proxies) if self.proxies else None
                 proxy = self.proxies[proxy_ip] if self.proxies else None
