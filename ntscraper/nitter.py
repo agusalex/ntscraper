@@ -229,15 +229,19 @@ class Nitter:
                 error = soup.find("div", class_="error-panel").find("span").text.strip()
                 message = f"Fetching error: {error}"
                 logging.warning(message)
+                if "has been suspended" in message:
+                    raise Exception(message)
                 if "rate limited" in error.lower():
                     return "rate_limited"
             else:
                 if soup.find("div", class_="timeline-header timeline-protected"):
                     message = "Account is protected"
+                    raise Exception(message)
                 else:
                     message = f"Empty page on {self.instance}"
-                    # FIXME return "empty"
-                logging.warning(message)
+                    logging.warning(message)
+                    raise Exception(message)
+
             soup = None
         return soup
 
