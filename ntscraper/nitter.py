@@ -256,7 +256,7 @@ class Nitter:
             try:
                 proxy_ip = self.retry_count % len(self.proxies) if self.proxies else None
                 proxy = self.proxies[proxy_ip] if self.proxies else None
-                if endpoint is not "/x":
+                if endpoint != "/x":
                     logging.info(
                         f"{self.instance}: Attempt at {endpoint} number {self.retry_count + 1} using random proxy: {proxy}")
                 self._initialize_session(self.instance, proxy)
