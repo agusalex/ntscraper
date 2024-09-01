@@ -91,7 +91,6 @@ class Nitter:
             if self.skip_instance_check:
                 raise ValueError("No instance specified and instance check skipped")
             self.instance = self.get_random_instance()
-            logging.info(f"No instance specified, using random instance {self.instance}")
         else:
             self.instance = instance
 
@@ -240,7 +239,6 @@ class Nitter:
                 else:
                     message = f"Empty page on {self.instance}"
                     logging.warning(message)
-                    raise Exception(message)
 
             soup = None
         return soup
@@ -258,7 +256,9 @@ class Nitter:
             try:
                 proxy_ip = self.retry_count % len(self.proxies) if self.proxies else None
                 proxy = self.proxies[proxy_ip] if self.proxies else None
-                logging.info(f"Attempt at {endpoint} number {self.retry_count + 1} using random proxy: {proxy}")
+                if endpoint is not "/x":
+                    logging.info(
+                        f"{self.instance}: Attempt at {endpoint} number {self.retry_count + 1} using random proxy: {proxy}")
                 self._initialize_session(self.instance, proxy)
 
                 r = self.r.get(
@@ -818,7 +818,8 @@ class Nitter:
                         return tweets
 
                     if since_date:
-                        since_date_formatted = datetime.strptime(to_append["date"].split(' · ')[0], '%b %d, %Y').timestamp()
+                        since_date_formatted = datetime.strptime(to_append["date"].split(' · ')[0],
+                                                                 '%b %d, %Y').timestamp()
                         tweet_date_formatted = datetime.strptime(since_date, '%Y-%m-%d').timestamp()
                         if tweet_date_formatted >= since_date_formatted:
                             return tweets
